@@ -1,0 +1,19 @@
+@import "reset.css";
+
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+a,
+a:hover,
+a:focus {
+    text-decoration: none !important;
+}
+
+.clearFix:after {
+    display: table;
+    clear: both;
+    content: "";
+}
