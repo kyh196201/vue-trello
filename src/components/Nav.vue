@@ -1,12 +1,28 @@
 <template>
     <nav id="nav-bar" class="nav-bar clearFix">
         <router-link to="/" class="home-btn">Home</router-link>
-        <router-link to="/login" class="login-btn">Login</router-link>
+        <a href="" class="logout-btn" v-if="isAuth" @click.prevent="onLogout">
+            Logout
+        </a>
+        <router-link to="/login" class="login-btn" v-else>Login</router-link>
     </nav>
 </template>
 
 <script>
-export default {};
+import { mapGetters, mapMutations } from "vuex";
+
+export default {
+    computed: {
+        ...mapGetters(["isAuth"]),
+    },
+    methods: {
+        ...mapMutations(["LOGOUT"]),
+        onLogout() {
+            this.LOGOUT();
+            this.$router.push("login");
+        },
+    },
+};
 </script>
 
 <style>
@@ -18,7 +34,8 @@ export default {};
 }
 
 .nav-bar .home-btn,
-.nav-bar .login-btn {
+.nav-bar .login-btn,
+.nav-bar .logout-btn {
     font-weight: bold;
 }
 
@@ -32,7 +49,8 @@ export default {};
     color: var(--white);
 }
 
-.nav-bar .login-btn {
+.nav-bar .login-btn,
+.nav-bar .logout-btn {
     float: right;
     padding: 5px;
     color: var(--white);
@@ -43,7 +61,9 @@ export default {};
 }
 
 .nav-bar .login-btn:hover,
-.nav-bar .login-btn:focus {
+.nav-bar .login-btn:focus,
+.nav-bar .logout-btn:hover,
+.nav-bar .logout-btn:focus {
     background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

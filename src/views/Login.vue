@@ -8,6 +8,7 @@
                     type="email"
                     required
                     placeholder="test@test.com"
+                    ref="loginEmail"
                 ></b-form-input>
             </b-form-group>
             <b-form-group label="Password:" label-for="loginPw">
@@ -25,11 +26,14 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
     data() {
         return {
             loginEmail: "",
             loginPw: "",
+            rPath: "",
         };
     },
     computed: {
@@ -37,9 +41,35 @@ export default {
             return this.loginEmail.length && this.loginPw.length;
         },
     },
+    created() {
+        this.rPath = this.$route.query.rPath || "/";
+    },
     methods: {
+        ...mapActions(["LOGIN"]),
         onLogin() {
-            console.log(this.loginEmail, this.loginPw);
+            this.loginEmail = this.loginEmail.trim();
+            this.loginPw = this.loginPw.trim();
+
+            if (!this.loginPw || !this.loginEmail) return;
+
+            this.LOGIN({
+                email: this.loginEmail,
+                password: this.loginPw,
+            })
+                .then((token) => {
+                    if (token) {
+                        this.$router.push(this.rPath);
+                    }
+                })
+                .catch((err) => {
+                    const _error = err.data.error;
+                    this.onLoginFailed();
+                });
+        },
+        onLoginFailed() {
+            alert("아이디와 비밀번호를 확인해주세요!");
+            this.loginPw = "";
+            this.$refs.loginEmail.focus();
         },
     },
 };
