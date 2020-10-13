@@ -44,4 +44,10 @@ const auth = {
     },
 };
 
-export { auth, setAuthInHeader };
+const boards = {
+    fetch() {
+        return request("get", "/boards");
+    },
+};
+
+export { auth, setAuthInHeader, boards };

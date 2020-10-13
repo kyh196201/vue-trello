@@ -3,8 +3,11 @@ import VueRouter from "vue-router";
 
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
+import Board from "../views/Board.vue";
+import Card from "../views/Card.vue";
 
 import store from "../store/";
+import { setAuthInHeader } from "../api/";
 
 Vue.use(VueRouter);
 
@@ -13,7 +16,11 @@ const requireAuth = (to, from, next) => {
 
     const redirectPath = `/login?rPath=${encodeURIComponent(to.path)}`;
 
-    isLogin ? next() : next(redirectPath);
+    if (isLogin) {
+        next();
+    } else {
+        next(redirectPath);
+    }
 };
 
 const routes = [
@@ -27,6 +34,19 @@ const routes = [
         path: "/login",
         name: "Login",
         component: Login,
+    },
+    {
+        path: "/b/:bid",
+        name: "Board",
+        component: Board,
+        children: [
+            {
+                path: "c/:cid",
+                name: "Card",
+                component: Card,
+            },
+        ],
+        beforeEnter: requireAuth,
     },
 ];
 

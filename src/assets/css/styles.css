@@ -17,3 +17,7 @@ a:focus {
     clear: both;
     content: "";
 }
+
+ul {
+    margin: 0;
+}

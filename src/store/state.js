@@ -1,8 +1,7 @@
-const state = {
-    token: "",
-};
+import store from "./index.js";
 
-const TOKEN = sessionStorage.getItem("token");
-state.token = TOKEN;
+const state = {
+    token: null,
+};
 
 export default state;
