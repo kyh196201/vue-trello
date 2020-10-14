@@ -10,6 +10,7 @@ a,
 a:hover,
 a:focus {
     text-decoration: none !important;
+    color: inherit;
 }
 
 .clearFix:after {
@@ -20,4 +21,9 @@ a:focus {
 
 ul {
     margin: 0;
+}
+
+button {
+    border: none;
+    background-color: inherit;
 }

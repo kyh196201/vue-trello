@@ -7,11 +7,14 @@
                 <a href="" class="board__show-menu">...Show Menu</a>
             </header>
             <section class="board__content">
-                <div class="board__list-wrapper"></div>
+                <div
+                    class="board__list-wrapper"
+                    v-for="list in lists"
+                    :key="list.pos"
+                >
+                    <List :data="list" />
+                </div>
             </section>
-            <pre>
-                {{ board }}
-            </pre>
             <router-view></router-view>
         </div>
     </div>
@@ -19,14 +22,23 @@
 
 <script>
 import { board } from "../api";
+import List from "../components/List.vue";
 
 export default {
+    components: {
+        List,
+    },
     data() {
         return {
             bid: "",
             board: null,
             isLoading: false,
         };
+    },
+    computed: {
+        lists() {
+            return this.board.lists;
+        },
     },
     created() {
         this.bid = this.$route.params.bid;
@@ -72,13 +84,16 @@ export default {
 }
 
 .board__content {
-    overflow: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
     flex: 1 1;
     white-space: nowrap;
 }
 
 .board__list-wrapper {
     display: inline-block;
+    overflow-x: hidden;
+    overflow-y: auto;
     margin-right: 10px;
     width: 250px;
     height: 100%;
