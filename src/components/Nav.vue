@@ -19,7 +19,7 @@ export default {
         ...mapMutations(["LOGOUT"]),
         onLogout() {
             this.LOGOUT();
-            this.$router.push("login");
+            this.$router.push("/login");
         },
     },
 };
