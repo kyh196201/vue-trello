@@ -21,6 +21,11 @@
                         </span>
                     </router-link>
                 </li>
+                <li class="boards-item add-board">
+                    <a href="" class="boards-item__link">
+                        <span class="boards-item__title">Add Board</span>
+                    </a>
+                </li>
             </ul>
         </section>
     </div>
@@ -59,9 +64,7 @@ export default {
 .home {
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    flex: 1 1 auto;
-    width: 100%;
+    height: 100%;
 }
 
 .boards-container {
@@ -99,5 +102,21 @@ export default {
     font-size: 1.25rem;
     font-weight: bold;
     color: #fff;
+}
+
+.add-board {
+    background-color: #dddddd;
+}
+
+.add-board .boards-item__link {
+    display: flex;
+    flex: 1 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-board .boards-item__title {
+    vertical-align: middle;
+    color: gray;
 }
 </style>

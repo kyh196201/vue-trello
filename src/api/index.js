@@ -4,20 +4,10 @@ import router from "../router/";
 const DOMAIN = "http://localhost:3000";
 const UNAUTHROZIED = 401;
 const onUnauthorized = () => {
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const rPath = urlParams.get("rPath") || location.pathname;
-
-    // const pathName = location.pathname.split("/")[1];
-
-    // console.log(pathName);
-
-    // if (pathName !== "login") {
-    //     console.log(123);
-    //     router.push(`/login?rPath=${encodeURIComponent(location.pathname)}`);
-    // }
     router.push(`/login?rPath=${encodeURIComponent("/")}`);
 };
 
+// Axios warpping
 const request = (method, url, data) => {
     return axios({
         method,
@@ -32,22 +22,27 @@ const request = (method, url, data) => {
         });
 };
 
-const setAuthInHeader = (token) => {
+// Axios에 Beaerer토큰 설정
+export const setAuthInHeader = (token) => {
     axios.defaults.headers.common["Authorization"] = token
         ? `Bearer ${token}`
         : null;
 };
 
-const auth = {
+export const auth = {
     login(email, password) {
         return request("post", "/login", { email, password });
     },
 };
 
-const boards = {
+export const boards = {
     fetch() {
         return request("get", "/boards");
     },
 };
 
-export { auth, setAuthInHeader, boards };
+export const board = {
+    fetch(id) {
+        return request("get", `/boards/${id}`);
+    },
+};

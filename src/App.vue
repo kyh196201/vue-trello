@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <Nav />
-        <router-view />
+        <div class="app-content">
+            <router-view />
+        </div>
     </div>
 </template>
 
@@ -23,5 +25,14 @@ export default {
     flex-direction: column;
     width: 100%;
     height: 100vh;
+}
+
+.app-content {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    padding: 10px;
+    flex: 1 1 auto;
+    width: 100%;
 }
 </style>

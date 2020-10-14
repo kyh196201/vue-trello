@@ -5,6 +5,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Board from "../views/Board.vue";
 import Card from "../views/Card.vue";
+import NotFound from "../components/NotFound.vue";
 
 import store from "../store/";
 import { setAuthInHeader } from "../api/";
@@ -47,6 +48,11 @@ const routes = [
             },
         ],
         beforeEnter: requireAuth,
+    },
+    {
+        path: "*",
+        name: "NotFound",
+        component: NotFound,
     },
 ];
 
