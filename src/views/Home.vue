@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <header>
-            <h3 class="home__title">Personal Boards</h3>
+            <h3 class="home__title">{{ boardTitle }}</h3>
         </header>
         <section class="boards-container">
             <ul class="boards-list">
@@ -22,24 +22,33 @@
                     </router-link>
                 </li>
                 <li class="boards-item add-board">
-                    <a href="" class="boards-item__link">
+                    <a
+                        href=""
+                        class="boards-item__link"
+                        @click.prevent="showModal = true"
+                    >
                         <span class="boards-item__title">Add Board</span>
                     </a>
                 </li>
             </ul>
         </section>
+        <Modal v-if="showModal" @close="showModal = false" />
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import { boards } from "@/api/";
+import Modal from "../components/Modal.vue";
 
 export default {
     name: "Home",
+    components: { Modal },
     data() {
         return {
             boards: [],
+            boardTitle: "Personal Board",
+            showModal: false,
         };
     },
     methods: {

@@ -45,4 +45,7 @@ export const board = {
     fetch(id) {
         return request("get", `/boards/${id}`);
     },
+    create(title) {
+        return request("post", "/boards", { title });
+    },
 };
