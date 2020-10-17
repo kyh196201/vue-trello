@@ -8,6 +8,22 @@ const actions = {
             return accessToken;
         });
     },
+    // Get Board List
+    FETCH_BOARDS({ commit }) {
+        return api.boards
+            .fetch()
+            .then((data) => commit("SET_BOARDS", data.list));
+    },
+    // Create Board
+    CREATE_BOARD({ dispatch, commit }, { title }) {
+        return api.board
+            .create(title)
+            .then(() => {
+                dispatch("FETCH_BOARDS");
+                commit("SET_IS_ADD_BOARD", false);
+            })
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;

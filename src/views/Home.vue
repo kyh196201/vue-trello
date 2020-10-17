@@ -3,7 +3,8 @@
         <header>
             <h3 class="home__title">{{ boardTitle }}</h3>
         </header>
-        <section class="boards-container">
+        <div class="loader" v-if="isLoading">Loading...</div>
+        <section class="boards-container" v-else>
             <ul class="boards-list">
                 <li
                     class="boards-item"
@@ -25,7 +26,7 @@
                     <a
                         href=""
                         class="boards-item__link"
-                        @click.prevent="showAddBoard = true"
+                        @click.prevent="SET_IS_ADD_BOARD(true)"
                     >
                         <span class="boards-item__title">Add Board</span>
                     </a>
@@ -42,24 +43,28 @@
 
 <script>
 // @ is an alias to /src
-import { boards } from "@/api/";
 import AddBoard from "../components/AddBoard.vue";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { boards } from "../api";
 
 export default {
     name: "Home",
     components: { AddBoard },
     data() {
         return {
-            boards: [],
             boardTitle: "Personal Board",
-            showAddBoard: false,
+            isLoading: false,
         };
     },
+    computed: {
+        ...mapState(["boards", "showAddBoard"]),
+    },
     methods: {
+        ...mapMutations(["SET_IS_ADD_BOARD"]),
+        ...mapActions(["FETCH_BOARDS"]),
         fetchData() {
-            boards.fetch().then((data) => {
-                this.boards = data.list;
-            });
+            this.isLoading = true;
+            this.FETCH_BOARDS().then(() => (this.isLoading = false));
         },
         onCreateBoard() {
             this.showAddBoard = false;

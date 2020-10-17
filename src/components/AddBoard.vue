@@ -2,7 +2,7 @@
     <Modal class="addBoard">
         <div class="addBoard__header" slot="header">
             <p class="addBoard__title">Create a board</p>
-            <a href="" class="addBoard__close" @click.prevent="$emit('close')">
+            <a href="" class="addBoard__close" @click.prevent="onClose">
                 &times;
             </a>
         </div>
@@ -13,6 +13,7 @@
                     class="form-control"
                     placeholder="제목을 입력하세요"
                     v-model="boardTitle"
+                    @keyup.enter="onCreateBoard"
                     ref="boardTitle"
                 />
             </form>
@@ -32,8 +33,8 @@
 
 <script>
 import Modal from "./Modal.vue";
-import { board, boards } from "../api";
 import validate from "../utils/validate.js";
+import { mapActions, maoMutations, mapMutations } from "vuex";
 
 export default {
     components: { Modal },
@@ -47,7 +48,12 @@ export default {
             return !!this.boardTitle.length;
         },
     },
+    mounted() {
+        this.$refs.boardTitle.focus();
+    },
     methods: {
+        ...mapMutations(["SET_IS_ADD_BOARD"]),
+        ...mapActions(["CREATE_BOARD"]),
         onCreateBoard(event) {
             this.boardTitle = this.boardTitle.trim();
 
@@ -57,12 +63,12 @@ export default {
                 this.$refs.boardTitle.focus();
                 return false;
             }
-            return board
-                .create(this.boardTitle)
-                .then((data) => {
-                    this.$emit("submit");
-                })
-                .catch((err) => Promise.reject(err));
+            return this.CREATE_BOARD({ title: this.boardTitle }).catch((err) =>
+                console.error(err)
+            );
+        },
+        onClose() {
+            this.SET_IS_ADD_BOARD(false);
         },
     },
 };
