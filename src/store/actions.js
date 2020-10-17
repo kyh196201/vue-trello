@@ -15,12 +15,12 @@ const actions = {
             .then((data) => commit("SET_BOARDS", data.list));
     },
     // Create Board
-    CREATE_BOARD({ dispatch, commit }, { title }) {
+    CREATE_BOARD({ dispatch }, { title }) {
         return api.board
             .create(title)
-            .then(() => {
+            .then(({ item }) => {
                 dispatch("FETCH_BOARDS");
-                commit("SET_IS_ADD_BOARD", false);
+                return item;
             })
             .catch((err) => Promise.reject(err));
     },

@@ -7,16 +7,14 @@
             </a>
         </div>
         <div class="addBoard__form" slot="body">
-            <form>
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="제목을 입력하세요"
-                    v-model="boardTitle"
-                    @keyup.enter="onCreateBoard"
-                    ref="boardTitle"
-                />
-            </form>
+            <input
+                type="text"
+                class="form-control"
+                placeholder="제목을 입력하세요"
+                v-model="boardTitle"
+                @keyup.enter="onCreateBoard"
+                ref="boardTitle"
+            />
         </div>
         <div class="addBoard__footer" slot="footer">
             <b-button
@@ -35,6 +33,7 @@
 import Modal from "./Modal.vue";
 import validate from "../utils/validate.js";
 import { mapActions, maoMutations, mapMutations } from "vuex";
+import { KEYCODE } from "../utils/constants.js";
 
 export default {
     components: { Modal },
@@ -50,6 +49,8 @@ export default {
     },
     mounted() {
         this.$refs.boardTitle.focus();
+        this.setKeyupEvent();
+        this.setClickcOutSideEvent();
     },
     methods: {
         ...mapMutations(["SET_IS_ADD_BOARD"]),
@@ -63,12 +64,35 @@ export default {
                 this.$refs.boardTitle.focus();
                 return false;
             }
-            return this.CREATE_BOARD({ title: this.boardTitle }).catch((err) =>
-                console.error(err)
-            );
+            return this.CREATE_BOARD({ title: this.boardTitle })
+                .then((item) => {
+                    //CREATE_BOARD의 return 값이 item
+                    this.SET_IS_ADD_BOARD(false);
+                    this.$router.push(`/b/${item.id}`);
+                })
+                .catch((err) => console.error(err));
         },
         onClose() {
             this.SET_IS_ADD_BOARD(false);
+        },
+        setKeyupEvent() {
+            const self = this;
+
+            window.onkeyup = function(e) {
+                if (e.keyCode !== KEYCODE.esc) return;
+                self.SET_IS_ADD_BOARD(false);
+                window.onkeyup = null;
+            };
+        },
+        setClickcOutSideEvent() {
+            const self = this;
+            window.onclick = function(e) {
+                const $target = e.target;
+                if ($target.className === "modal-wrapper") {
+                    self.SET_IS_ADD_BOARD(false);
+                    window.onclick = null;
+                }
+            };
         },
     },
 };
