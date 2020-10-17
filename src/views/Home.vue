@@ -25,30 +25,34 @@
                     <a
                         href=""
                         class="boards-item__link"
-                        @click.prevent="showModal = true"
+                        @click.prevent="showAddBoard = true"
                     >
                         <span class="boards-item__title">Add Board</span>
                     </a>
                 </li>
             </ul>
         </section>
-        <Modal v-if="showModal" @close="showModal = false" />
+        <AddBoard
+            v-if="showAddBoard"
+            @close="showAddBoard = false"
+            @submit="onCreateBoard"
+        />
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import { boards } from "@/api/";
-import Modal from "../components/Modal.vue";
+import AddBoard from "../components/AddBoard.vue";
 
 export default {
     name: "Home",
-    components: { Modal },
+    components: { AddBoard },
     data() {
         return {
             boards: [],
             boardTitle: "Personal Board",
-            showModal: false,
+            showAddBoard: false,
         };
     },
     methods: {
@@ -56,6 +60,10 @@ export default {
             boards.fetch().then((data) => {
                 this.boards = data.list;
             });
+        },
+        onCreateBoard() {
+            this.showAddBoard = false;
+            this.fetchData();
         },
     },
     created() {

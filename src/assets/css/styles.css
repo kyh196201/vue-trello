@@ -1,5 +1,9 @@
 @import "reset.css";
 
+:root {
+    --black-color: #000;
+}
+
 *,
 *:after,
 *:before {
@@ -19,7 +23,8 @@ a:focus {
     content: "";
 }
 
-ul {
+ul,
+p {
     margin: 0;
 }
 
