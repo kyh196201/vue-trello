@@ -34,7 +34,7 @@ export default {
     display: block;
     position: relative;
     border-radius: 5px;
-    padding: 5px;
+    padding: 2.5px 5px;
     width: 100%;
     background-color: #fff;
     color: rgb(58, 49, 49);

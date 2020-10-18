@@ -24,6 +24,22 @@ const actions = {
             })
             .catch((err) => Promise.reject(err));
     },
+    //Fetch Board
+    FETCH_BOARD({ commit }, { id }) {
+        return api.board
+            .fetch(id)
+            .then((data) => commit("SET_BOARD", data.item))
+            .catch((err) => Promise.reject(err));
+    },
+    //Create Card
+    CREATE_CARD({ dispatch, state }, { title, listId }) {
+        return api.card
+            .create({ title, listId })
+            .then(() => {
+                dispatch("FETCH_BOARD", { id: state.board.id });
+            })
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;

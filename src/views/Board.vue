@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import { board } from "../api";
 import List from "../components/List.vue";
+import { mapActions, mapState } from "vuex";
 
 export default {
     components: {
@@ -31,11 +31,11 @@ export default {
     data() {
         return {
             bid: "",
-            board: null,
             isLoading: false,
         };
     },
     computed: {
+        ...mapState(["board"]),
         lists() {
             return this.board.lists;
         },
@@ -45,12 +45,12 @@ export default {
         this.fetchData();
     },
     methods: {
+        ...mapActions(["FETCH_BOARD"]),
         fetchData() {
             const id = this.bid;
             this.isLoading = true;
-            board
-                .fetch(id)
-                .then((data) => (this.board = data.item))
+            this.FETCH_BOARD({ id })
+                .catch((err) => console.error(err))
                 .finally(() => (this.isLoading = false));
         },
     },

@@ -3,8 +3,14 @@ import router from "../router/";
 
 const DOMAIN = "http://localhost:3000";
 const UNAUTHROZIED = 401;
+const NOTFOUND = 404;
 const onUnauthorized = () => {
     router.push(`/login?rPath=${encodeURIComponent("/")}`);
+};
+
+const noNotFound = () => {
+    alert("존재하지 않는 보드입니다.");
+    router.push("/");
 };
 
 // Axios warpping
@@ -17,7 +23,12 @@ const request = (method, url, data) => {
         .then((result) => result.data)
         .catch((result) => {
             const { status } = result.response;
-            if (status === UNAUTHROZIED) onUnauthorized();
+
+            if (status === UNAUTHROZIED) {
+                onUnauthorized();
+            } else if (status === NOTFOUND) {
+                noNotFound();
+            }
             throw result.response;
         });
 };
@@ -47,5 +58,15 @@ export const board = {
     },
     create(title) {
         return request("post", "/boards", { title });
+    },
+};
+
+export const card = {
+    /**
+     *
+     * @param {*} payload object => title : string, listId : number, pos : number(optional)
+     */
+    create(payload) {
+        return request("post", "/cards", payload);
     },
 };
