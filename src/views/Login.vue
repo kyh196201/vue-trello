@@ -44,6 +44,9 @@ export default {
     created() {
         this.rPath = this.$route.query.rPath || "/";
     },
+    mounted() {
+        this.$refs.loginEmail.focus();
+    },
     methods: {
         ...mapActions(["LOGIN"]),
         onLogin() {

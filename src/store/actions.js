@@ -40,6 +40,13 @@ const actions = {
             })
             .catch((err) => Promise.reject(err));
     },
+    // Get Card
+    FETCH_CARD(ctx, { id }) {
+        return api.card
+            .fetch(id)
+            .then((data) => data.item)
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;

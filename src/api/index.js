@@ -69,4 +69,7 @@ export const card = {
     create(payload) {
         return request("post", "/cards", payload);
     },
+    fetch(id) {
+        return request("get", `/cards/${id}`);
+    },
 };

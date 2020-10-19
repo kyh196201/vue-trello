@@ -1,8 +1,9 @@
 <template>
     <li class="card-item" :data-pos="data.pos" :data-card-id="data.id">
         <router-link :to="`/b/${bid}/c/${data.id}`">
-            <div class="card-item__title">
-                {{ data.title }}
+            <div class="card-item__header">
+                <span class="card-item__title">{{ data.title }}</span>
+                <span class="card-item__detail" v-if="data.desc">&equiv;</span>
             </div>
             <button class="card-item__close">
                 &times;
@@ -51,11 +52,19 @@ export default {
     margin-bottom: 0px;
 }
 
-.card-item__title {
+.card-item__header {
     display: flex;
     align-items: center;
     flex-grow: 1;
     font-weight: bold;
+}
+
+.card-item__title {
+    margin-right: 10px;
+}
+
+.card-item__detail {
+    line-height: 24px;
 }
 
 .card-item__close {

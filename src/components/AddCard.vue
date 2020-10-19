@@ -32,6 +32,13 @@ export default {
     },
     mounted() {
         this.focusInput();
+        this.bindEvent();
+    },
+    destroyed() {
+        const self = this;
+        document
+            .querySelector("body")
+            .removeEventListener("click", this.onClickOutSide, false);
     },
     methods: {
         ...mapActions(["CREATE_CARD"]),
@@ -56,6 +63,22 @@ export default {
                     this.focusInput();
                 })
                 .finally(() => this.$emit("close"));
+        },
+        bindEvent() {
+            const self = this;
+            document
+                .querySelector("body")
+                .addEventListener("click", this.onClickOutSide, false);
+        },
+        onClickOutSide(event) {
+            const $target = event.target;
+            const $parent = this.$el.closest(".list-item");
+            if (
+                $parent.contains($target) ||
+                $target.classList.contains("addCard__toggle")
+            )
+                return;
+            this.$emit("close");
         },
     },
 };
