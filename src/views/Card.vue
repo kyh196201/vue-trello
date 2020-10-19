@@ -3,14 +3,30 @@
         <div v-if="isLoading"></div>
         <template v-else>
             <header slot="header" class="cardView__header">
-                <span class="cardView__title">{{ card.title }}</span>
+                <b-form-input
+                    v-model="inputTitle"
+                    placeholder="타이틀을 입력하세요:-)"
+                    class="cardView__inputTitle"
+                    v-if="isEditTitle"
+                    ref="inputTitle"
+                ></b-form-input>
+                <span class="cardView__title" v-else @click="setEditTitle">{{
+                    card.title
+                }}</span>
                 <router-link :to="`/b/${board.id}`" class="cardView__close">
                     &times;
                 </router-link>
             </header>
             <div slot="body" class="cardView__body">
                 <div>Description</div>
-                <p class="cardView__desc">
+                <b-form-textarea
+                    class="cardView__inputDesc"
+                    v-if="isEditDesc"
+                    v-model="inputDesc"
+                    placeholder="상세 내용을 입력하세요:-)"
+                    ref="inputDesc"
+                ></b-form-textarea>
+                <p class="cardView__desc" v-else @click="setEditDesc">
                     {{ card.discription || emptyText }}
                 </p>
             </div>
@@ -31,6 +47,7 @@ import Modal from "../components/Modal.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
+    name: "Card",
     components: {
         Modal: Modal,
     },
@@ -39,6 +56,10 @@ export default {
             cid: "",
             card: {},
             isLoading: false,
+            isEditTitle: false,
+            inputTitle: "",
+            isEditDesc: false,
+            inputDesc: "",
             emptyText: "클릭해서 카드 내용을 입력하세요:-)",
         };
     },
@@ -67,6 +88,24 @@ export default {
             const bid = this.board.id;
             this.$router.push(`/b/${bid}`);
         },
+        // Edit Title 시작 함수
+        setEditTitle() {
+            this.isEditTitle = true;
+            this.inputTitle = this.card.title.trim();
+            // NOTE nextTick()
+            this.$nextTick(() => {
+                this.$refs.inputTitle.focus();
+            });
+        },
+        setEditDesc() {
+            this.isEditDesc = true;
+            this.inputDesc = this.card.description
+                ? this.card.description.trim()
+                : "";
+            this.$nextTick(() => {
+                this.$refs.inputDesc.focus();
+            });
+        },
     },
 };
 </script>
@@ -93,11 +132,24 @@ export default {
 .cardView__title {
     flex: 1 1;
     margin-right: 10px;
-    padding: 0 10px;
-    font-size: 1.5rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1.25rem;
     font-weight: bold;
     background-color: #dbe4ff;
     border-radius: 5px;
+}
+
+.cardView__inputTitle {
+    flex: 1 1;
+    margin-right: 10px;
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+}
+
+.cardView__inputDesc {
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+    color: #000 !important;
 }
 
 .cardView__close {
@@ -116,7 +168,7 @@ export default {
 
 .cardView__desc {
     margin-bottom: 0px;
-    padding: 5px 10px;
+    padding: 0.375rem 0.75rem;
     max-height: 500px;
     font-weight: bold;
     font-size: 1.25rem;
