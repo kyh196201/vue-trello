@@ -5,13 +5,20 @@
                 {{ data.title }}
             </span>
         </div>
-        <ul class="list-item__cardList">
+        <draggable
+            class="list-item__cardList list-group"
+            :list="data.cards"
+            :data-list-id="data.id"
+            draggable=".card-item"
+            group="cardItem"
+            @end="onEnd"
+        >
             <card-item
                 v-for="card in data.cards"
                 :data="card"
                 :key="card.pos"
             />
-        </ul>
+        </draggable>
         <footer class="addCard-container">
             <add-card
                 v-if="isAddCard"
@@ -26,19 +33,58 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import CardItem from "./CardItem.vue";
 import AddCard from "./AddCard.vue";
+import { mapActions } from "vuex";
 
 export default {
     props: ["data"],
     components: {
         "card-item": CardItem,
         "add-card": AddCard,
+        draggable: draggable,
     },
     data() {
         return {
             isAddCard: false,
         };
+    },
+    methods: {
+        ...mapActions(["UPDATE_CARD"]),
+        onEnd(event) {
+            const { to, item, newIndex } = event;
+
+            const listId = to.dataset.listId;
+            const siblings = Array.from(to.querySelectorAll(".card-item"));
+
+            const currentCard = {
+                id: item.dataset.cardId * 1,
+                pos: 65535,
+                listId: listId * 1,
+            };
+
+            // FIXME 카드 포지션 구하는 로직 수정 필요
+            const prevCard = newIndex === 0 ? null : siblings[newIndex - 1];
+            const nextCard =
+                newIndex === siblings.length - 1
+                    ? null
+                    : siblings[newIndex + 1];
+
+            if (!prevCard && !nextCard) {
+                currentCard.pos = 65535;
+            } else if (!prevCard && nextCard) {
+                currentCard.pos = nextCard.dataset.cardPos / 2;
+            } else if (prevCard && !nextCard) {
+                currentCard.pos = prevCard.dataset.cardPos * 2;
+            } else if (prevCard && nextCard) {
+                const prevPos = prevCard.dataset.cardPos * 1;
+                const nextPos = nextCard.dataset.cardPos * 1;
+                currentCard.pos = (prevPos + nextPos) / 2;
+            }
+
+            this.UPDATE_CARD(currentCard);
+        },
     },
 };
 </script>
@@ -56,7 +102,7 @@ export default {
 }
 
 .list-item__cardList {
-    padding: 5px 10px;
+    padding: 5px 10px !important;
     margin: 0;
 }
 

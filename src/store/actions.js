@@ -32,9 +32,9 @@ const actions = {
             .catch((err) => Promise.reject(err));
     },
     //Create Card
-    CREATE_CARD({ dispatch, state }, { title, listId }) {
+    CREATE_CARD({ dispatch, state }, { title, listId, pos }) {
         return api.card
-            .create({ title, listId })
+            .create({ title, listId, pos })
             .then(() => {
                 dispatch("FETCH_BOARD", { id: state.board.id });
             })

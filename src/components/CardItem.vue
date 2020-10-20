@@ -1,5 +1,10 @@
 <template>
-    <li class="card-item" :data-pos="data.pos" :data-card-id="data.id">
+    <div
+        class="card-item"
+        :data-pos="data.pos"
+        :data-card-id="data.id"
+        :data-card-pos="data.pos"
+    >
         <router-link :to="`/b/${bid}/c/${data.id}`">
             <div class="card-item__header">
                 <span class="card-item__title">{{ data.title }}</span>
@@ -11,7 +16,7 @@
                 &times;
             </button>
         </router-link>
-    </li>
+    </div>
 </template>
 
 <script>

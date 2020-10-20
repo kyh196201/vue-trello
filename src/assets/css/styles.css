@@ -28,6 +28,12 @@ p {
     margin: 0;
 }
 
+ul,
+ol,
+li {
+    list-style: none;
+}
+
 button {
     border: none;
     background-color: inherit;

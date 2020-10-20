@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
     props: ["listId"],
@@ -29,6 +29,9 @@ export default {
         return {
             cardTitle: "",
         };
+    },
+    computed: {
+        ...mapState(["board"]),
     },
     mounted() {
         this.focusInput();
@@ -53,9 +56,12 @@ export default {
                 return this.focusInput();
             }
 
+            const pos = this.getPos();
+
             this.CREATE_CARD({
                 title: this.cardTitle,
                 listId: Number(this.listId),
+                pos: pos,
             })
                 .catch((err) => {
                     console.error(err);
@@ -79,6 +85,13 @@ export default {
             )
                 return;
             this.$emit("close");
+        },
+        getPos() {
+            const list = this.board.lists.filter(
+                (b) => b.id === this.listId
+            )[0];
+            const lastCard = list.cards[list.cards.length - 1];
+            return lastCard ? lastCard.pos * 2 : 65535;
         },
     },
 };
