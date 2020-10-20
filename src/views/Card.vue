@@ -31,6 +31,9 @@
                 </p>
             </div>
             <footer slot="footer" class="cardView__footer">
+                <b-button variant="success" class="cardView__button">
+                    Edit
+                </b-button>
                 <b-button
                     variant="dark"
                     class="cardView__button"
@@ -92,7 +95,6 @@ export default {
         setEditTitle() {
             this.isEditTitle = true;
             this.inputTitle = this.card.title.trim();
-            // NOTE nextTick()
             this.$nextTick(() => {
                 this.$refs.inputTitle.focus();
             });
@@ -181,5 +183,9 @@ export default {
 .cardView__button {
     font-weight: bold !important;
     font-size: 2rem;
+}
+
+.cardView__button:first-child {
+    margin-right: 10px;
 }
 </style>

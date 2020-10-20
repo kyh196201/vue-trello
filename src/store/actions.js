@@ -47,6 +47,18 @@ const actions = {
             .then((data) => data.item)
             .catch((err) => Promise.reject(err));
     },
+    UPDATE_CARD(ctx, { id, title, description, listId, pos }) {
+        const payload = {
+            tilte,
+            description,
+            listId,
+            pos,
+        };
+        return api.card
+            .update({ id, payload })
+            .then((data) => console.log(data))
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;
