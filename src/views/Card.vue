@@ -7,12 +7,10 @@
                     v-model="inputTitle"
                     placeholder="타이틀을 입력하세요:-)"
                     class="cardView__inputTitle"
-                    v-if="isEditTitle"
+                    v-if="isEdit"
                     ref="inputTitle"
                 ></b-form-input>
-                <span class="cardView__title" v-else @click="setEditTitle">{{
-                    card.title
-                }}</span>
+                <span class="cardView__title" v-else>{{ card.title }}</span>
                 <router-link :to="`/b/${board.id}`" class="cardView__close">
                     &times;
                 </router-link>
@@ -21,25 +19,48 @@
                 <div>Description</div>
                 <b-form-textarea
                     class="cardView__inputDesc"
-                    v-if="isEditDesc"
+                    v-if="isEdit"
                     v-model="inputDesc"
                     placeholder="상세 내용을 입력하세요:-)"
                     ref="inputDesc"
                 ></b-form-textarea>
-                <p class="cardView__desc" v-else @click="setEditDesc">
-                    {{ card.discription || emptyText }}
+                <p class="cardView__desc" v-else>
+                    {{ card.description || emptyText }}
                 </p>
             </div>
             <footer slot="footer" class="cardView__footer">
-                <b-button variant="success" class="cardView__button">
-                    Edit
-                </b-button>
-                <b-button
-                    variant="dark"
-                    class="cardView__button"
-                    @click="goBoard"
-                    >Ok</b-button
-                >
+                <template v-if="isEdit">
+                    <b-button
+                        variant="success"
+                        class="cardView__button"
+                        @click="onEditCard"
+                    >
+                        Done
+                    </b-button>
+                    <b-button
+                        variant="dark"
+                        class="cardView__button"
+                        @click="restoreEdit"
+                    >
+                        cancel
+                    </b-button>
+                </template>
+                <template v-else>
+                    <b-button
+                        variant="success"
+                        class="cardView__button"
+                        @click="startEdit"
+                    >
+                        Edit
+                    </b-button>
+                    <b-button
+                        variant="dark"
+                        class="cardView__button"
+                        @click="goBoard"
+                    >
+                        Ok
+                    </b-button>
+                </template>
             </footer>
         </template>
     </Modal>
@@ -59,11 +80,10 @@ export default {
             cid: "",
             card: {},
             isLoading: false,
-            isEditTitle: false,
+            isEdit: false,
             inputTitle: "",
-            isEditDesc: false,
             inputDesc: "",
-            emptyText: "클릭해서 카드 내용을 입력하세요:-)",
+            emptyText: "카드 상세 내용을 입력하세요:-)",
         };
     },
     computed: {
@@ -79,7 +99,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["FETCH_CARD"]),
+        ...mapActions(["FETCH_CARD", "UPDATE_CARD"]),
         fetchData() {
             this.FETCH_CARD({
                 id: this.cid,
@@ -91,22 +111,42 @@ export default {
             const bid = this.board.id;
             this.$router.push(`/b/${bid}`);
         },
-        // Edit Title 시작 함수
-        setEditTitle() {
-            this.isEditTitle = true;
-            this.inputTitle = this.card.title.trim();
-            this.$nextTick(() => {
-                this.$refs.inputTitle.focus();
-            });
+        startEdit() {
+            this.isEdit = true;
+            this.setEditor();
+            this.$nextTick(() => this.$refs.inputTitle.focus());
         },
-        setEditDesc() {
-            this.isEditDesc = true;
-            this.inputDesc = this.card.description
-                ? this.card.description.trim()
-                : "";
-            this.$nextTick(() => {
-                this.$refs.inputDesc.focus();
-            });
+        // 수정 모드 실행 시 수정 데이터에 기존 Card 데이터 바인딩.
+        setEditor() {
+            this.inputTitle = this.card.title;
+            this.inputDesc = this.card.description || "";
+        },
+        restoreEdit() {
+            this.inputTitle = "";
+            this.inputDesc = "";
+            this.isEdit = false;
+        },
+        onEditCard() {
+            const listId = this.card.listId;
+            const title = this.inputTitle.trim();
+            const description = this.inputDesc.length
+                ? this.inputDesc.trim()
+                : null;
+            const id = this.cid;
+
+            if (!this.inputTitle.length) {
+                alert("카드 제목을 입력해주세요!");
+                this.inputTitle = this.card.title;
+                this.$nextTick(() => this.$refs.inputTitle.focus());
+                return false;
+            }
+
+            this.UPDATE_CARD({ id, title, listId, description })
+                .catch((err) => console.error(err))
+                .finally(() => {
+                    this.fetchData();
+                    this.restoreEdit();
+                });
         },
     },
 };

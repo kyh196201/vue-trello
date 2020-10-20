@@ -47,16 +47,18 @@ const actions = {
             .then((data) => data.item)
             .catch((err) => Promise.reject(err));
     },
-    UPDATE_CARD(ctx, { id, title, description, listId, pos }) {
+    UPDATE_CARD({ dispatch, state }, { id, title, description, listId, pos }) {
         const payload = {
-            tilte,
+            title,
             description,
             listId,
             pos,
         };
         return api.card
             .update({ id, payload })
-            .then((data) => console.log(data))
+            .then(() => {
+                dispatch("FETCH_BOARD", { id: state.board.id });
+            })
             .catch((err) => Promise.reject(err));
     },
 };

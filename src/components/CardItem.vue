@@ -3,7 +3,9 @@
         <router-link :to="`/b/${bid}/c/${data.id}`">
             <div class="card-item__header">
                 <span class="card-item__title">{{ data.title }}</span>
-                <span class="card-item__detail" v-if="data.desc">&equiv;</span>
+                <span class="card-item__detail" v-if="data.description"
+                    >&equiv;</span
+                >
             </div>
             <button class="card-item__close">
                 &times;
