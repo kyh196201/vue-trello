@@ -1,13 +1,8 @@
 <template>
-    <div
-        class="card-item"
-        :data-pos="data.pos"
-        :data-card-id="data.id"
-        :data-card-pos="data.pos"
-    >
+    <div class="card-item" :data-card-id="data.id" :data-card-pos="data.pos">
         <router-link :to="`/b/${bid}/c/${data.id}`">
             <div class="card-item__header">
-                <span class="card-item__title">{{ data.title }}</span>
+                <span class="card-item__title">{{ data.pos }}</span>
                 <span class="card-item__detail" v-if="data.description"
                     >&equiv;</span
                 >

@@ -9,6 +9,8 @@
             <section class="board__content">
                 <div
                     class="board__list-wrapper"
+                    :data-list-id="list.id"
+                    :data-list-pos="list.pos"
                     v-for="list in lists"
                     :key="list.pos"
                 >

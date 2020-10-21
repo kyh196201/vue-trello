@@ -37,6 +37,7 @@ import draggable from "vuedraggable";
 import CardItem from "./CardItem.vue";
 import AddCard from "./AddCard.vue";
 import { mapActions } from "vuex";
+import getSibling from "../utils/dragger.js";
 
 export default {
     props: ["data"],
@@ -52,37 +53,25 @@ export default {
     },
     methods: {
         ...mapActions(["UPDATE_CARD"]),
-        onEnd(event) {
-            const { to, item, newIndex } = event;
-
+        onEnd({ to, item, newIndex }) {
             const listId = to.dataset.listId;
             const siblings = Array.from(to.querySelectorAll(".card-item"));
 
             const currentCard = {
                 id: item.dataset.cardId * 1,
-                pos: 65535,
                 listId: listId * 1,
+                pos: 65535,
             };
 
-            // FIXME 카드 포지션 구하는 로직 수정 필요
-            const prevCard = newIndex === 0 ? null : siblings[newIndex - 1];
-            const nextCard =
-                newIndex === siblings.length - 1
-                    ? null
-                    : siblings[newIndex + 1];
+            const { prev, next } = getSibling(item, siblings, newIndex, "card");
 
-            if (!prevCard && !nextCard) {
-                currentCard.pos = 65535;
-            } else if (!prevCard && nextCard) {
-                currentCard.pos = nextCard.dataset.cardPos / 2;
-            } else if (prevCard && !nextCard) {
-                currentCard.pos = prevCard.dataset.cardPos * 2;
-            } else if (prevCard && nextCard) {
-                const prevPos = prevCard.dataset.cardPos * 1;
-                const nextPos = nextCard.dataset.cardPos * 1;
-                currentCard.pos = (prevPos + nextPos) / 2;
+            if (!prev && next) {
+                currentCard.pos = next.pos / 2;
+            } else if (prev && !next) {
+                currentCard.pos = prev.pos * 2;
+            } else if (prev && next) {
+                currentCard.pos = (prev.pos + next.pos) / 2;
             }
-
             this.UPDATE_CARD(currentCard);
         },
     },
