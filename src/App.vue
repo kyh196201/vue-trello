@@ -31,7 +31,7 @@ export default {
     display: flex;
     overflow: hidden;
     flex-direction: column;
-    padding: 10px;
+    /* padding: 10px; */
     flex: 1 1 auto;
     width: 100%;
 }

@@ -31,6 +31,13 @@ const actions = {
             .then((data) => commit("SET_BOARD", data.item))
             .catch((err) => Promise.reject(err));
     },
+    // Delete Board
+    DELETE_BOARD({ dispatch }, { id }) {
+        return api.board
+            .destroy(id)
+            .then(() => dispatch("FETCH_BOARDS"))
+            .catch((err) => Promise.reject(err));
+    },
     //Create Card
     CREATE_CARD({ dispatch, state }, { title, listId, pos }) {
         return api.card

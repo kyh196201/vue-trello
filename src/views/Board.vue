@@ -4,7 +4,13 @@
         <div class="board" v-else>
             <header class="board__header">
                 <span class="board__title">{{ board.title }}</span>
-                <a href="" class="board__show-menu">...Show Menu</a>
+                <a
+                    href=""
+                    class="board__show-menu"
+                    @click.prevent="isSetting = true"
+                >
+                    ...Show Menu
+                </a>
             </header>
             <section class="board__content">
                 <div
@@ -17,29 +23,38 @@
                     <List :data="list" />
                 </div>
             </section>
-            <router-view></router-view>
         </div>
+        <board-setting :class="isOpenSetting" @close="isSetting = false" />
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
 import List from "../components/List.vue";
+import BoardSetting from "../components/BoardSetting.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
     components: {
         List,
+        "board-setting": BoardSetting,
     },
     data() {
         return {
             bid: "",
             isLoading: false,
+            isSetting: false,
         };
     },
     computed: {
         ...mapState(["board"]),
         lists() {
             return this.board.lists;
+        },
+        isOpenSetting() {
+            return {
+                opened: this.isSetting,
+            };
         },
     },
     created() {
@@ -62,6 +77,8 @@ export default {
 <style>
 .board-wrapper {
     display: flex;
+    position: relative;
+    padding: 10px;
     height: 100%;
 }
 
@@ -78,6 +95,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     flex: none;
+    margin-bottom: 10px;
 }
 
 .board__title {
