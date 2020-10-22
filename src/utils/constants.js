@@ -9,3 +9,8 @@ export const COLORS = [
     "rgb(81, 152, 57)",
     "rgb(176, 70, 50)",
 ];
+
+export const DEFAULT_COLOR = {
+    body: "#FFF",
+    nav: "#026aa7",
+};

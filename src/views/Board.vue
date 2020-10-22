@@ -47,7 +47,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["board", "bgColor"]),
+        ...mapState(["board"]),
         lists() {
             return this.board.lists;
         },
@@ -70,20 +70,9 @@ export default {
                 .catch((err) => console.error(err))
                 .finally(() => (this.isLoading = false));
         },
-        setColor(color) {
-            document.body.style.backgroundColor = color ? color : "#fff";
-            document.querySelector("#nav-bar").style.backgroundColor = color
-                ? "rgba(0, 0, 0, 0.15)"
-                : "#026aa7";
-        },
-    },
-    updated() {
-        // 보드 데이터를 받아온 후 갱신된 스토어의 bgColor를 이용해서 배경색상 설정
-        this.setColor(this.bgColor);
     },
     destroyed() {
         this.$store.commit("SET_BG_COLOR", null);
-        this.setColor(null);
     },
 };
 </script>

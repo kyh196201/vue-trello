@@ -1,4 +1,5 @@
 import { setAuthInHeader } from "../api/";
+import { DEFAULT_COLOR } from "../utils/constants.js";
 
 const mutations = {
     LOGIN(state, token) {
@@ -24,7 +25,8 @@ const mutations = {
         state.board = board;
     },
     SET_BG_COLOR(state, color) {
-        state.bgColor = color ? color : null;
+        state.bodyColor = color ? color : DEFAULT_COLOR.body;
+        state.navColor = color ? "rgba(0, 0, 0, 0.15)" : DEFAULT_COLOR.nav;
     },
 };
 

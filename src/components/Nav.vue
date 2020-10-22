@@ -9,17 +9,32 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapState } from "vuex";
+import { DEFAULT_COLOR } from "../utils/constants.js";
 
 export default {
     computed: {
         ...mapGetters(["isAuth"]),
+        ...mapState(["bodyColor", "navColor"]),
+    },
+    watch: {
+        bodyColor: {
+            handler: function() {
+                this.setColor();
+            },
+        },
     },
     methods: {
         ...mapMutations(["LOGOUT"]),
         onLogout() {
             this.LOGOUT();
             this.$router.push("/login");
+        },
+        setColor() {
+            document.body.style.backgroundColor = this.bodyColor;
+            document.getElementById(
+                "nav-bar"
+            ).style.backgroundColor = this.navColor;
         },
     },
 };
