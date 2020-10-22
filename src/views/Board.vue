@@ -3,7 +3,18 @@
         <div class="loading" v-if="isLoading">Loading...</div>
         <div class="board" v-else>
             <header class="board__header">
-                <span class="board__title">{{ board.title }}</span>
+                <input
+                    type="text"
+                    class="form-control board__inputTitle"
+                    v-model="inputTitle"
+                    v-if="isEdit"
+                    ref="inputTitle"
+                    @blur="onBlur"
+                    @keyup.enter="onKeyup"
+                />
+                <span class="board__title" v-else @click="startEdit">{{
+                    board.title
+                }}</span>
                 <a
                     href=""
                     class="board__show-menu"
@@ -42,8 +53,11 @@ export default {
     data() {
         return {
             bid: "",
+            inputTitle: "",
+            isEdit: false,
             isLoading: false,
             isSetting: false,
+            firingEvent: null,
         };
     },
     computed: {
@@ -62,13 +76,55 @@ export default {
         this.fetchData();
     },
     methods: {
-        ...mapActions(["FETCH_BOARD"]),
+        ...mapActions(["FETCH_BOARD", "UPDATE_BOARD"]),
         fetchData() {
             const id = this.bid;
             this.isLoading = true;
             this.FETCH_BOARD({ id })
                 .catch((err) => console.error(err))
                 .finally(() => (this.isLoading = false));
+        },
+        startEdit() {
+            this.isEdit = true;
+            this.inputTitle = this.board.title;
+            this.$nextTick(() => this.$refs.inputTitle.focus());
+        },
+        onBlur() {
+            if (this.firingEvent) return;
+            this.restore();
+        },
+        onKeyup(ev) {
+            this.updateBoard(ev);
+        },
+        updateBoard(ev) {
+            this.firingEvent = ev.type;
+            console.log(this.firingEvent);
+            const id = this.bid;
+
+            if (!this.inputTitle) {
+                alert("제목을 입력해주세요!");
+                this.$refs.inputTitle.focus();
+                this.inputTitle = this.board.title;
+                return false;
+            }
+
+            this.inputTitle = this.inputTitle.trim();
+
+            if (this.inputTitle === this.board.title) return false;
+
+            return this.UPDATE_BOARD({
+                id,
+                title: this.inputTitle,
+            })
+                .catch((err) => console.error(err))
+                .finally(() => {
+                    this.restore();
+                });
+        },
+        restore() {
+            this.isEdit = false;
+            this.inputTitle = "";
+            this.firingEvent = null;
         },
     },
     destroyed() {
@@ -101,8 +157,18 @@ export default {
     margin-bottom: 10px;
 }
 
-.board__show-menu {
+.form-control.board__inputTitle {
+    max-width: 200px;
+    font-weight: bold;
     font-size: 1.25rem;
+}
+
+.form-control.board__inputTitle:focus {
+    border-color: lightseagreen;
+    box-shadow: none;
+}
+
+.board__show-menu {
     font-weight: bold;
     color: rgb(58, 58, 58);
     text-decoration: underline;
