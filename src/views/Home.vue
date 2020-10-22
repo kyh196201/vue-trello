@@ -78,6 +78,7 @@ export default {
         this.$refs.boardItem.forEach((el) => {
             el.style.backgroundColor = el.dataset.bgColor;
         });
+        console.log(this.$store.state.bgColor);
     },
 };
 </script>

@@ -40,7 +40,7 @@ export default {
 }
 
 .nav-bar .home-btn {
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 1.5rem;
 }
 

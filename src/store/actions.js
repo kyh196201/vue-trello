@@ -28,7 +28,11 @@ const actions = {
     FETCH_BOARD({ commit }, { id }) {
         return api.board
             .fetch(id)
-            .then((data) => commit("SET_BOARD", data.item))
+            .then((data) => {
+                const { item } = data;
+                commit("SET_BOARD", item);
+                commit("SET_BG_COLOR", item.bgColor);
+            })
             .catch((err) => Promise.reject(err));
     },
     // Delete Board
@@ -36,6 +40,13 @@ const actions = {
         return api.board
             .destroy(id)
             .then(() => dispatch("FETCH_BOARDS"))
+            .catch((err) => Promise.reject(err));
+    },
+    // Update Board
+    UPDATE_BOARD({ dispatch, state }, { id, title, bgColor }) {
+        return api.board
+            .update({ id, payload: { title, bgColor } })
+            .then(() => dispatch("FETCH_BOARD", { id: state.board.id }))
             .catch((err) => Promise.reject(err));
     },
     //Create Card

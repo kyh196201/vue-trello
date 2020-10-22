@@ -16,15 +16,22 @@
                     Delete Board
                 </a>
             </div>
+            <div class="setting__item">
+                <Colors />
+            </div>
         </div>
     </section>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import Colors from "./Colors.vue";
 
 export default {
     name: "BoardSetting",
+    components: {
+        Colors,
+    },
     computed: {
         ...mapState(["board"]),
     },
@@ -59,7 +66,7 @@ export default {
     background-color: #edeff0;
     z-index: 9999;
     opacity: 0;
-    transition: all 0.5s ease 0.1s;
+    transition: all 0.5s linear 0s;
 }
 
 .board-setting.opened {

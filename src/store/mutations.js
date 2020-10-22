@@ -23,6 +23,9 @@ const mutations = {
     SET_BOARD(state, board) {
         state.board = board;
     },
+    SET_BG_COLOR(state, color) {
+        state.bgColor = color ? color : null;
+    },
 };
 
 export default mutations;

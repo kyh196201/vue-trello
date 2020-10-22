@@ -5,6 +5,7 @@ const state = {
     boards: [],
     board: {},
     showAddBoard: false,
+    bgColor: null,
 };
 
 export default state;
