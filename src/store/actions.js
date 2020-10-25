@@ -96,6 +96,14 @@ const actions = {
             })
             .catch((err) => Promise.reject(err));
     },
+    UPDATE_LIST({ dispatch, state }, { id, title, pos }) {
+        return api.list
+            .update({ id, payload: { title, pos } })
+            .then((data) => {
+                dispatch("FETCH_BOARD", { id: state.board.id });
+            })
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;

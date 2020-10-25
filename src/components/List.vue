@@ -1,7 +1,16 @@
 <template>
     <article class="list-item" :data-list-id="data.id" :data-pos="data.pos">
         <div class="list-item__header">
-            <span class="list-item__title">
+            <input
+                type="text"
+                class="list-item__input form-control"
+                v-model="inputTitle"
+                v-if="isEdit"
+                @blur="onBlur"
+                @keyup.enter="onKeyUp"
+                ref="inputTitle"
+            />
+            <span class="list-item__title" v-else @click="startEdit">
                 {{ data.title }}
             </span>
         </div>
@@ -49,10 +58,12 @@ export default {
     data() {
         return {
             isAddCard: false,
+            isEdit: false,
+            inputTitle: "",
         };
     },
     methods: {
-        ...mapActions(["UPDATE_CARD"]),
+        ...mapActions(["UPDATE_CARD", "UPDATE_LIST"]),
         onEnd({ to, item, newIndex }) {
             const listId = to.dataset.listId;
             const siblings = Array.from(to.querySelectorAll(".card-item"));
@@ -74,6 +85,42 @@ export default {
             }
             this.UPDATE_CARD(currentCard);
         },
+        startEdit() {
+            this.isEdit = true;
+            this.inputTitle = this.data.title;
+            this.$nextTick(() => {
+                this.$refs.inputTitle.focus();
+            });
+        },
+        onKeyUp() {
+            this.inputTitle = this.inputTitle.trim();
+            const { id, title } = this.data;
+
+            if (!this.inputTitle) {
+                alert("리스트 제목을 입력해주세요!");
+                this.inputTitle = title;
+                return false;
+            }
+
+            if (this.inputTitle === title) {
+                this.onBlur();
+            }
+
+            this.UPDATE_LIST({
+                id: id,
+                title: this.inputTitle,
+            })
+                .then(() => this.onBlur())
+                .catch((err) => console.error(err));
+        },
+        onBlur() {
+            this.restore();
+        },
+        restore() {
+            this.inputTitle = "";
+            this.isEdit = false;
+            return false;
+        },
     },
 };
 </script>
@@ -90,9 +137,18 @@ export default {
     font-weight: bold;
 }
 
+.list-item__header > span {
+    display: inline-block;
+    width: 100%;
+}
+
 .list-item__cardList {
     padding: 5px 10px !important;
     margin: 0;
+}
+
+.list-item__header .form-control {
+    font-weight: bold !important;
 }
 
 .addCard__toggle {
