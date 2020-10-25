@@ -33,6 +33,12 @@
                 >
                     <List :data="list" />
                 </div>
+                <div class="board__addList-wrapper">
+                    <add-list v-if="isAddList" @close="isAddList = false" />
+                    <a href="" v-else @click.prevent="isAddList = true">
+                        &plus; Add another list
+                    </a>
+                </div>
             </section>
         </div>
         <board-setting :class="isOpenSetting" @close="isSetting = false" />
@@ -43,12 +49,14 @@
 <script>
 import List from "../components/List.vue";
 import BoardSetting from "../components/BoardSetting.vue";
+import AddList from "../components/AddList.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
     components: {
         List,
         "board-setting": BoardSetting,
+        "add-list": AddList,
     },
     data() {
         return {
@@ -57,6 +65,7 @@ export default {
             isEdit: false,
             isLoading: false,
             isSetting: false,
+            isAddList: false,
             firingEvent: null,
         };
     },
@@ -193,5 +202,28 @@ export default {
     margin-right: 10px;
     width: 250px;
     height: 100%;
+}
+
+.board__addList-wrapper {
+    display: inline-block;
+    width: 250px;
+    margin-right: 10px;
+    vertical-align: top;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.board__addList-wrapper > a {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    transition: all 0.2s linear;
+}
+
+.board__addList-wrapper > a:hover {
+    opacity: 0.5;
+    color: #fff;
 }
 </style>

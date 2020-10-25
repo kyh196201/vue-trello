@@ -22,6 +22,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { getLastElement } from "../utils/helper.js";
 
 export default {
     props: ["listId"],
@@ -90,8 +91,8 @@ export default {
             const list = this.board.lists.filter(
                 (b) => b.id === this.listId
             )[0];
-            const lastCard = list.cards[list.cards.length - 1];
-            return lastCard ? lastCard.pos * 2 : 65535;
+            const lastCard = getLastElement(list.cards);
+            return lastCard && lastCard.pos ? lastCard.pos * 2 : 65535;
         },
     },
 };

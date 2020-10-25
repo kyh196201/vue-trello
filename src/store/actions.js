@@ -87,6 +87,15 @@ const actions = {
             })
             .catch((err) => Promise.reject(err));
     },
+    // Create List
+    CREATE_LIST({ dispatch, state }, { title, boardId, pos }) {
+        return api.list
+            .create({ title, boardId, pos })
+            .then(() => {
+                dispatch("FETCH_BOARD", { id: state.board.id });
+            })
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;
