@@ -15,7 +15,7 @@
             </span>
         </div>
         <draggable
-            class="list-item__cardList list-group"
+            class="list-item__cardList"
             :list="data.cards"
             :data-list-id="data.id"
             draggable=".card-item"

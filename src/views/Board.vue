@@ -24,21 +24,28 @@
                 </a>
             </header>
             <section class="board__content">
-                <div
-                    class="board__list-wrapper"
-                    :data-list-id="list.id"
-                    :data-list-pos="list.pos"
-                    v-for="list in lists"
-                    :key="list.pos"
+                <draggable
+                    class="list-dragger"
+                    group="listWrapper"
+                    draggable=".list-wrapper"
+                    @end="onEndDrop"
                 >
-                    <List :data="list" />
-                </div>
-                <div class="board__addList-wrapper">
-                    <add-list v-if="isAddList" @close="isAddList = false" />
-                    <a href="" v-else @click.prevent="isAddList = true">
-                        &plus; Add another list
-                    </a>
-                </div>
+                    <div
+                        class="board__list-wrapper list-wrapper"
+                        :data-list-id="list.id"
+                        :data-list-pos="list.pos"
+                        v-for="list in lists"
+                        :key="list.pos"
+                    >
+                        <List :data="list" />
+                    </div>
+                    <div class="board__addList-wrapper">
+                        <add-list v-if="isAddList" @close="isAddList = false" />
+                        <a href="" v-else @click.prevent="isAddList = true">
+                            &plus; Add another list
+                        </a>
+                    </div>
+                </draggable>
             </section>
         </div>
         <board-setting :class="isOpenSetting" @close="isSetting = false" />
@@ -47,16 +54,19 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import List from "../components/List.vue";
 import BoardSetting from "../components/BoardSetting.vue";
 import AddList from "../components/AddList.vue";
 import { mapActions, mapState } from "vuex";
+import getSibling from "../utils/dragger.js";
 
 export default {
     components: {
         List,
         "board-setting": BoardSetting,
         "add-list": AddList,
+        draggable,
     },
     data() {
         return {
@@ -85,7 +95,7 @@ export default {
         this.fetchData();
     },
     methods: {
-        ...mapActions(["FETCH_BOARD", "UPDATE_BOARD"]),
+        ...mapActions(["FETCH_BOARD", "UPDATE_BOARD", "UPDATE_LIST"]),
         fetchData() {
             const id = this.bid;
             this.isLoading = true;
@@ -134,6 +144,37 @@ export default {
             this.isEdit = false;
             this.inputTitle = "";
             this.firingEvent = null;
+        },
+        onEndDrop(event) {
+            const { to, item, newIndex, oldIndex } = event;
+
+            // 리스트가 이동하지 않았을 경우
+            if (newIndex === oldIndex) return;
+
+            const siblings = to.querySelectorAll(".list-wrapper");
+
+            //데이터 전송을 위한 객체를 미리 생성
+            const currentList = {
+                id: item.dataset.listId,
+                pos: item.dataset.listPos * 1,
+            };
+
+            //next, prev 객체를 통해 이동한 후 리스트의 위치를 파악한다.
+            const { next, prev } = getSibling(item, siblings, newIndex, "list");
+
+            // 리스트의 위치에 따른 경우의 수
+            if (next && prev) {
+                //중간에 있을 경우
+                currentList.pos = (next.pos + prev.pos) / 2;
+            } else if (!next && prev) {
+                //제일 뒤에 있을 경우
+                currentList.pos = prev.pos * 2;
+            } else if (next && !prev) {
+                //제일 앞에 있을 경우
+                currentList.pos = next.pos / 2;
+            }
+
+            this.UPDATE_LIST(currentList).catch((err) => console.error(err));
         },
     },
     destroyed() {
@@ -225,5 +266,9 @@ export default {
 .board__addList-wrapper > a:hover {
     opacity: 0.5;
     color: #fff;
+}
+
+.list-dragger {
+    height: 100%;
 }
 </style>
