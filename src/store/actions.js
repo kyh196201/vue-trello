@@ -104,6 +104,12 @@ const actions = {
             })
             .catch((err) => Promise.reject(err));
     },
+    DELETE_LIST({ dispatch, state }, { id }) {
+        return api.list
+            .destroy(id)
+            .then(() => dispatch("FETCH_BOARD", { id: state.board.id }))
+            .catch((err) => Promise.reject(err));
+    },
 };
 
 export default actions;

@@ -13,6 +13,9 @@
             <span class="list-item__title" v-else @click="startEdit">
                 {{ data.title }}
             </span>
+            <a href="" class="list-item__close" @click.prevent="onDelete"
+                >&times;</a
+            >
         </div>
         <draggable
             class="list-item__cardList"
@@ -63,7 +66,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(["UPDATE_CARD", "UPDATE_LIST"]),
+        ...mapActions(["UPDATE_CARD", "UPDATE_LIST", "DELETE_LIST"]),
         onEnd({ to, item, newIndex }) {
             const listId = to.dataset.listId;
             const siblings = Array.from(to.querySelectorAll(".card-item"));
@@ -116,6 +119,13 @@ export default {
         onBlur() {
             this.restore();
         },
+        onDelete() {
+            const { title, id } = this.data;
+            if (!window.confirm(`${title} 리스트를 삭제하시겠습니까?`))
+                return false;
+
+            this.DELETE_LIST({ id }).catch((err) => console.error(err));
+        },
         restore() {
             this.inputTitle = "";
             this.isEdit = false;
@@ -133,13 +143,34 @@ export default {
 }
 
 .list-item__header {
-    padding: 10px;
+    position: relative;
+    padding: 10px 30px 10px 10px;
     font-weight: bold;
 }
 
 .list-item__header > span {
     display: inline-block;
     width: 100%;
+}
+
+.list-item__close {
+    position: absolute;
+    top: 50%;
+    padding: 0 5px;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 1.25rem;
+    line-height: 100%;
+    z-index: 10;
+    outline: none !important;
+}
+
+.list-item__close:hover {
+    color: #000;
+    opacity: 0.5;
 }
 
 .list-item__cardList {
